@@ -19,7 +19,7 @@ namespace VideoStore.Model
             set
             {
                 if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
-                    throw new TooManyCopiesOfSameMovieException("Missing title.");
+                    throw new EmptyMovieTitleException("Missing title.");
 
                 this.title = value;
             }
@@ -29,7 +29,7 @@ namespace VideoStore.Model
 
         public Movie(string title, string genre, int year)
         {
-            this.title = title;
+            this.Title = title;
             this.Genre = genre;
             this.Year = year;
         }

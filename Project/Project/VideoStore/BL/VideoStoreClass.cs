@@ -86,16 +86,21 @@ namespace VideoStore.BL
                 throw new EmptyMovieTitleException("Missing title.");
 
             CheckIDFormat(idNumber);
-            var tmp1 = rentals.GetRentalsFor(idNumber);
-            var tmp = tmp1.Any(r => r.MovieTitle == movieTitle);
-            //if (!rentals.GetRentalsFor(idNumber).Any(r => r.MovieTitle == movieTitle))
-            if (!tmp)
+            var rentalById = rentals.GetRentalsFor(idNumber);
+            if (rentalById != null)
+            {
+                var rentalMovie = rentalById.Any(r => r.MovieTitle == movieTitle);
+                //if (!rentals.GetRentalsFor(idNumber).Any(r => r.MovieTitle == movieTitle))
+                if (!rentalMovie)
+                {
+                    throw new NotRegistratedRentalException($"{movieTitle} is not rented by {idNumber}.");
+                }
+                rentals.RemoveRental(movieTitle, idNumber);
+            }
+            else
             {
                 throw new NotRegistratedRentalException($"{movieTitle} is not rented by {idNumber}.");
             }
-
-            rentals.RemoveRental(movieTitle, idNumber);
-
         }
 
         private void CheckIDFormat(string id)

@@ -77,4 +77,10 @@ namespace VideoStore.Exceptions
         public EmptyMovieTitleException(string message) : base(message)
         { }
     }
+
+    public class NotAllowedToRentException : Exception
+    {
+        public NotAllowedToRentException(string message) : base(message)
+        { }
+    }
 }

@@ -21,7 +21,7 @@ namespace VideoStore.Test
         [SetUp]
         public void SetUp()
         {
-            rentals = Substitute.For<IRentals>();
+            rentals = Substitute.For<Rentals>();
             sut = new VideoStoreClass(rentals);
         }
 
@@ -44,9 +44,8 @@ namespace VideoStore.Test
         [Test]
         public void CanNotAddMovie_IfTitleIsEmpty()
         {
-            //TODO: Don't get it!!!!! Pga det kommer in i Objekt form
-            //Assert.Throws<EmptyMovieTitleException>(() => sut.AddMovie(new Movie("", "drama", 2000)));
-            //Assert.Throws<EmptyMovieTitleException>(() => sut.AddMovie(new Movie(" ", "drama", 2000)));
+            Assert.Throws<EmptyMovieTitleException>(() => sut.AddMovie(new Movie("", "drama", 2000)));
+            Assert.Throws<EmptyMovieTitleException>(() => sut.AddMovie(new Movie(" ", "drama", 2000)));
         }
 
         [Test]
@@ -134,14 +133,13 @@ namespace VideoStore.Test
         {
             sut.AddMovie(new Movie("Amelie", "drama", 2000));
             sut.RegisterCustomer("Kriszta", "1975-11-07");
-            //sut.RentMovie("Amelie", "1975-11-07");  //TODO: bugg here??
+            sut.RentMovie("Amelie", "1975-11-07");  
 
-            //TODO: Why not jumping in?? rental is null..
-            //var rental = rentals.GetRentalsFor("1975-11-07");
+            //rentals.Received().AddRental(Arg.Is<string>(x => x.Contains("Amelie")), Arg.Is<string>(x => x.Contains("1975-11-07")));
 
-            //sut.ReturnMovie("Amelie", "1975-11-07");
+            sut.ReturnMovie("Amelie", "1975-11-07");
 
-            //rentals.Received().RemoveRental(Arg.Is<string>(x => x.Contains("Amelie")), Arg.Is<string>(x => x.Contains("1975-11-07")));
+            rentals.Received().RemoveRental(Arg.Is<string>(x => x.Contains("Amelie")), Arg.Is<string>(x => x.Contains("1975-11-07")));
         }
     }
 }

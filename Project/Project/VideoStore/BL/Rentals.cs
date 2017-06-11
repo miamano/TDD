@@ -23,26 +23,26 @@ namespace VideoStore.BL
         {
             var rentalsForCustomer = GetRentalsFor(idNumber);
 
-            var dueDayRentalForCustomer = rentalsForCustomer.Where(r => r.DueDate < DateTime.Now).ToList();
-
-            if (dueDayRentalForCustomer.Count() > 0)
+            if (rentalsForCustomer.Count() != 0)
             {
-                StringBuilder sb = new StringBuilder();
-                sb.AppendLine("Late returns:");
-                foreach (var item in dueDayRentalForCustomer)
-                    sb.AppendLine("Title:" + item.MovieTitle + ", Due Date: " + item.DueDate.Date );
-
-                throw new NoMoreCopiesToRentException(sb.ToString());
+                var dueDayRentalForCustomer = rentalsForCustomer.Where(r => r.DueDate < DateTime.Now).ToList();
+                if (dueDayRentalForCustomer.Count() > 0)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    sb.AppendLine("Late returns:");
+                    foreach (var item in dueDayRentalForCustomer)
+                        sb.AppendLine("Title:" + item.MovieTitle + ", Due Date: " + item.DueDate.Date);
+                    throw new NotAllowedToRentException(sb.ToString());
+                }
             }
 
             if (rentalsForCustomer.Count() >= MaxCopiesOfMovies)
                 throw new NoMoreCopiesToRentException($"Max. {MaxCopiesOfMovies} movies per customer.");
 
-            if (rentalsForCustomer.Any(r => r.CustomerId == idNumber))
+            if (rentalsForCustomer.Any(r => r.CustomerId == idNumber && r.MovieTitle == movieTitle))
                 throw new NoMoreCopiesToRentException("This movie has already rented by same customer.");
 
-            var tmpRentedAt = new DateTime();
-            rentals.Add(new Rental() { CustomerId = idNumber, MovieTitle = movieTitle, RentedAt = tmpRentedAt.Date });
+            rentals.Add(new Rental() { CustomerId = idNumber, MovieTitle = movieTitle, RentedAt = DateTime.Now.Date });
         }
 
         public List<Rental> GetRentalsFor(string idNumber)
